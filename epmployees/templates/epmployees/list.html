@@ -1,0 +1,228 @@
+{% extends 'epmployees/base.html' %}
+
+{% block content %}
+
+<style>
+
+    body{
+        background: #f4f7fc;
+    }
+
+    .page-title{
+        font-weight: bold;
+        color: #1e293b;
+    }
+
+    .employee-card{
+        background: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+    }
+
+    .search-box input{
+        border-radius: 10px;
+        height: 45px;
+    }
+
+    .search-btn{
+        border-radius: 10px;
+        padding: 10px 20px;
+    }
+
+    .table{
+        border-radius: 12px;
+        overflow: hidden;
+    }
+
+    .table thead{
+        background: linear-gradient(to right, #0f172a, #1e293b);
+        color: white;
+    }
+
+    .table tbody tr:hover{
+        background-color: #f1f5f9;
+        transition: 0.3s;
+    }
+
+    .action-btn{
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .pagination-box a,
+    .pagination-box span{
+        border-radius: 10px;
+        padding: 8px 15px;
+        margin-right: 5px;
+    }
+
+</style>
+
+<div class="container mt-5">
+
+    <div class="employee-card">
+
+        <!-- Title + Add Button -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+
+            <h2 class="page-title">
+                Employee Management
+            </h2>
+
+            <a href="{% url 'add_employee' %}" class="btn btn-success">
+                + Add Employee
+            </a>
+
+        </div>
+
+        <!-- Search -->
+        <form method="GET" class="row g-2 mb-4">
+
+            <div class="col-md-10">
+                <input type="text"
+                       name="search"
+                       class="form-control"
+                       placeholder="Search employee by name">
+            </div>
+
+            <div class="col-md-2">
+                <button type="submit"
+                        class="btn btn-primary w-100 search-btn">
+                    Search
+                </button>
+            </div>
+
+        </form>
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-success alert-dismissible fade show">
+                    {{ message }}
+
+                    <button type="button"
+                            class="btn-close"
+                            data-bs-dismiss="alert">
+                    </button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Table -->
+        <div class="table-responsive">
+
+            <table class="table table-hover align-middle">
+
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Department</th>
+                        <th>Salary</th>
+                        <th width="180">Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                {% for emp in employees %}
+
+                    <tr>
+
+                        <td>{{ emp.name }}</td>
+
+                        <td>{{ emp.email }}</td>
+
+                        <td>
+                            <span class="badge bg-primary">
+                                {{ emp.department }}
+                            </span>
+                        </td>
+
+                        <td>
+                            ₹ {{ emp.salary }}
+                        </td>
+
+                        <td>
+
+                            <a href="{% url 'update_employee' emp.id %}"
+                               class="btn btn-warning btn-sm action-btn">
+                                Edit
+                            </a>
+
+                            <a href="{% url 'delete_employee' emp.id %}"
+                               class="btn btn-danger btn-sm action-btn"
+                               onclick="return confirm('Delete this employee?')">
+
+                                Delete
+                            </a>
+
+                        </td>
+
+                    </tr>
+
+                {% empty %}
+
+                    <tr>
+                        <td colspan="5" class="text-center text-muted">
+                            No Employees Found
+                        </td>
+                    </tr>
+
+                {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination-box mt-4">
+
+            {% if employees.has_previous %}
+
+                <a href="?page=1"
+                   class="btn btn-dark">
+                   First
+                </a>
+
+                <a href="?page={{ employees.previous_page_number }}"
+                   class="btn btn-primary">
+                   Previous
+                </a>
+
+            {% endif %}
+
+            <span class="btn btn-secondary">
+
+                Page {{ employees.number }}
+                of
+                {{ employees.paginator.num_pages }}
+
+            </span>
+
+            {% if employees.has_next %}
+
+                <a href="?page={{ employees.next_page_number }}"
+                   class="btn btn-primary">
+                   Next
+                </a>
+
+                <a href="?page={{ employees.paginator.num_pages }}"
+                   class="btn btn-dark">
+                   Last
+                </a>
+
+            {% endif %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}
