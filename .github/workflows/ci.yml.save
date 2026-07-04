@@ -1,0 +1,5 @@
+name: Django CI/CD
+on: 
+  push:
+    branch: [ "main"]
+
