@@ -71,8 +71,14 @@ def employee_list(request):
 
     employees = paginator.get_page(page_number)
 
-    return render(request, 'epmployees/list.html', {'employees': employees})
-
+    return render(
+        request,
+        'epmployees/list.html',
+        {
+            'employees': employees,
+            'total_employee_count': Employee.objects.count()
+        }
+    )
 
 
 from django.shortcuts import render, redirect
